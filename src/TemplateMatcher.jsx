@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Wrench, Ruler, Newspaper, Megaphone } from "lucide-react";
 
 const templates = [
   { naam: "E101A", artikelen: ["L"], preview: "E101A.jpg" },
@@ -420,7 +421,6 @@ function TemplateMatcher() {
   };
 
   const mogelijkeTemplates = templates.filter((template) => {
-    // Filter op paginaformaat (E = enkel, S = spread)
     if (paginaformaat === 'single' && !(template.naam || '').startsWith('E')) return false;
     if (paginaformaat === 'spread' && !(template.naam || '').startsWith('S')) return false;
 
@@ -441,10 +441,14 @@ function TemplateMatcher() {
 
   return (
     <div className="p-6 space-y-6 text-[#002f6c] min-h-screen" style={{ backgroundImage: 'linear-gradient(to bottom right, #b3cce6, #e6edf5)' }}>
-      <h1 className="text-2xl font-extrabold tracking-tight">De Limburger <span className="italic"> Template Matcher</span> <span className="text-sm font-normal align-top ml-2 bg-white/40 px-2 py-0.5 rounded">BETA</span></h1>
+      <div className="flex items-center">
+        <img src="https://focus.limburger.nl/raw/prod-mh-design-system/7.14.1/dl/logos/logo-main.svg" alt="De Limburger logo" className="h-12 mr-4" />
+        <h1 className="text-3xl font-extrabold tracking-tight">Template Matcher</h1>
+        <span className="text-sm font-normal align-top ml-2 bg-white/40 px-2 py-0.5 rounded">BETA</span>
+      </div>
 
       <div className="bg-white/40 rounded-xl p-4">
-        <h2 className="text-lg font-bold mb-4">📐 Paginaformaat</h2>
+        <h2 className="text-lg font-bold mb-4 flex items-center"><Ruler className="w-5 h-5 mr-2" /> Paginaformaat</h2>
         <div className="mb-2">
           <label className="text-sm font-semibold mb-1 block">Kies het formaat van de pagina die je wil plannen</label>
           <select
@@ -460,8 +464,8 @@ function TemplateMatcher() {
       </div>
 
       <div className="bg-white/40 rounded-xl p-4">
-        <h2 className="text-lg font-bold mb-4">📰 Artikelen</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-xl">
+        <h2 className="text-lg font-bold mb-4 flex items-center"><Newspaper className="w-5 h-5 mr-2" /> Artikelen</h2>
+        <div className="grid grid-cols-4 gap-6 max-w-xl">
           {formaten.map((formaat) => (
             <div key={formaat} className="flex flex-col">
               <label htmlFor={formaat} className="text-sm font-semibold mb-1">
@@ -481,7 +485,7 @@ function TemplateMatcher() {
       </div>
 
       <div className="bg-white/40 rounded-xl p-4">
-        <h2 className="text-lg font-bold mb-4">📢 Advertenties</h2>
+        <h2 className="text-lg font-bold mb-4 flex items-center"><Megaphone className="w-5 h-5 mr-2" /> Advertenties</h2>
         <div className="mb-6">
           <label className="text-sm font-semibold mb-1 block">Aantal advertenties</label>
           <select
@@ -542,7 +546,7 @@ function TemplateMatcher() {
           {mogelijkeTemplates.map((template) => (
             <Card key={template.naam} className="border border-[#002f6c]">
               <CardContent className="p-4">
-                <p className="font-bold text-[#002f6c]">{template.naam}</p>
+                <p className="font-bold text-2xl text-[#002f6c] flex items-center">{(template.naam || '').slice(0,5)}{(template.naam || '').toLowerCase().includes('variant') && <Wrench className="inline-block w-6 h-6 ml-2" />}</p>
                 {visualiseerBlokjes(template)}
                 {template.preview && (
                   <img
