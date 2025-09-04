@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-// We verwijderen lucide-react iconen en vervangen ze door emoji zodat deploy eenvoudiger is.
-
 const templates = [
   { naam: "E101A", artikelen: ["L"], preview: "E101A.jpg" },
   { naam: "E102A", artikelen: ["XL"], preview: "E102A.jpg" },
@@ -371,6 +369,17 @@ const advertentieLetterMap = {
   W4:  'N',
 };
 
+const TooltipImage = ({ src = "advertentiematen.jpg", alt = "Advertentiematen" }) => (
+  <span className="relative group inline-flex items-center ml-2 cursor-help select-none" aria-label="Toon voorbeeld">
+    <span className="text-sm align-middle">ℹ️</span>
+    <span className="absolute left-0 top-full mt-2 hidden group-hover:block z-50">
+      <span className="block rounded-lg border border-[#002f6c] bg-white shadow-lg p-1">
+        <img src={src} alt={alt} className="max-w-xs max-h-64 rounded" />
+      </span>
+    </span>
+  </span>
+);
+
 function TemplateMatcher() {
   const [geselecteerd, setGeselecteerd] = useState({});
   const [aantalAdvertenties, setAantalAdvertenties] = useState(0);
@@ -437,25 +446,21 @@ function TemplateMatcher() {
   };
 
   const mogelijkeTemplates = templates.filter((template) => {
-  // Enkele/spread-filter
-  if (paginaformaat === 'single' && !(template.naam || '').startsWith('E')) return false;
-  if (paginaformaat === 'spread' && !(template.naam || '').startsWith('S')) return false;
+    if (paginaformaat === 'single' && !(template.naam || '').startsWith('E')) return false;
+    if (paginaformaat === 'spread' && !(template.naam || '').startsWith('S')) return false;
 
-  // Advertentie 1: filter op basis van gekozen formaat -> 5e teken (letter) van de templatecode
-  if (aantalAdvertenties >= 1 && advertenties[0] && advertenties[0].formaat) {
-    const gewensteLetter = advertentieLetterMap[advertenties[0].formaat];
-    if (gewensteLetter) {
-      const code = (template.naam || '').slice(0, 5); // bv. "S206E" uit "S206E variant 1"
-      if (code[4] !== gewensteLetter) return false;
+    if (aantalAdvertenties >= 1 && advertenties[0] && advertenties[0].formaat) {
+      const gewensteLetter = advertentieLetterMap[advertenties[0].formaat];
+      if (gewensteLetter) {
+        const code = (template.naam || '').slice(0, 5);
+        if (code[4] !== gewensteLetter) return false;
+      }
     }
-  }
 
-  // (Je eerdere limiet)
-  if (aantalAdvertenties === 3) return false;
+    if (aantalAdvertenties === 3) return false;
 
-  // Alleen nog op artikelen matchen
-  return matchesTemplate(template);
-});
+    return matchesTemplate(template);
+  });
   
   return (
     <div className="p-6 space-y-6 text-[#002f6c] min-h-screen" style={{ backgroundImage: 'linear-gradient(to bottom right, #b3cce6, #e6edf5)' }}>
@@ -503,7 +508,7 @@ function TemplateMatcher() {
       </div>
 
       <div className="bg-white/40 rounded-xl p-4">
-        <h2 className="text-lg font-bold mb-4 flex items-center">📢 Advertenties</h2>
+        <h2 className="text-lg font-bold mb-4 flex items-center">📢 Advertentiematen <TooltipImage src="advertentiematen.jpg" alt="Advertentiematen" /></h2>
         <div className="mb-6">
           <label className="text-sm font-semibold mb-1 block">Aantal advertenties</label>
           <select
