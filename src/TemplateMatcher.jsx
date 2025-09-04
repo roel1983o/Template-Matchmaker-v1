@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Wrench, Ruler, Newspaper, Megaphone } from "lucide-react";
+
+// We verwijderen lucide-react iconen en vervangen ze door emoji zodat deploy eenvoudiger is.
 
 const templates = [
   { naam: "E101A", artikelen: ["L"], preview: "E101A.jpg" },
@@ -448,7 +449,7 @@ function TemplateMatcher() {
       </div>
 
       <div className="bg-white/40 rounded-xl p-4">
-        <h2 className="text-lg font-bold mb-4 flex items-center"><Ruler className="w-5 h-5 mr-2" /> Paginaformaat</h2>
+        <h2 className="text-lg font-bold mb-4 flex items-center">📐 Paginaformaat</h2>
         <div className="mb-2">
           <label className="text-sm font-semibold mb-1 block">Kies het formaat van de pagina die je wil plannen</label>
           <select
@@ -464,7 +465,7 @@ function TemplateMatcher() {
       </div>
 
       <div className="bg-white/40 rounded-xl p-4">
-        <h2 className="text-lg font-bold mb-4 flex items-center"><Newspaper className="w-5 h-5 mr-2" /> Artikelen</h2>
+        <h2 className="text-lg font-bold mb-4 flex items-center">📰 Artikelen</h2>
         <div className="grid grid-cols-4 gap-6 max-w-xl">
           {formaten.map((formaat) => (
             <div key={formaat} className="flex flex-col">
@@ -485,7 +486,7 @@ function TemplateMatcher() {
       </div>
 
       <div className="bg-white/40 rounded-xl p-4">
-        <h2 className="text-lg font-bold mb-4 flex items-center"><Megaphone className="w-5 h-5 mr-2" /> Advertenties</h2>
+        <h2 className="text-lg font-bold mb-4 flex items-center">📢 Advertenties</h2>
         <div className="mb-6">
           <label className="text-sm font-semibold mb-1 block">Aantal advertenties</label>
           <select
@@ -546,7 +547,7 @@ function TemplateMatcher() {
           {mogelijkeTemplates.map((template) => (
             <Card key={template.naam} className="border border-[#002f6c]">
               <CardContent className="p-4">
-                <p className="font-bold text-2xl text-[#002f6c] flex items-center">{(template.naam || '').slice(0,5)}{(template.naam || '').toLowerCase().includes('variant') && <Wrench className="inline-block w-6 h-6 ml-2" />}</p>
+                <p className="font-bold text-2xl text-[#002f6c] flex items-center">{(template.naam || '').slice(0,5)}{(template.naam || '').toLowerCase().includes('variant') && <span className="ml-2">🔧</span>}</p>
                 {visualiseerBlokjes(template)}
                 {template.preview && (
                   <img
