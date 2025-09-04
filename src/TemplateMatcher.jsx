@@ -355,6 +355,21 @@ const templates = [
 
 const formaten = ["XS", "Sn", "Sl", "Mn", "Ml", "L", "XL", "XXL"];
 const formaatVolgorde = { XS: 1, Sn: 2, Sl: 3, Mn: 4, Ml: 5, L: 6, XL: 7, XXL: 8 };
+const advertentieLetterMap = {
+  W41: 'B',
+  W39: 'C',
+  W37: 'D',
+  W36: 'E',
+  W35: 'F',
+  W32: 'G',
+  W29: 'H',
+  W23: 'I',
+  W21: 'J',
+  W17: 'K',
+  W16: 'L',
+  W13: 'M',
+  W4:  'N',
+};
 
 function TemplateMatcher() {
   const [geselecteerd, setGeselecteerd] = useState({});
@@ -422,24 +437,26 @@ function TemplateMatcher() {
   };
 
   const mogelijkeTemplates = templates.filter((template) => {
-    if (paginaformaat === 'single' && !(template.naam || '').startsWith('E')) return false;
-    if (paginaformaat === 'spread' && !(template.naam || '').startsWith('S')) return false;
+  // Enkele/spread-filter
+  if (paginaformaat === 'single' && !(template.naam || '').startsWith('E')) return false;
+  if (paginaformaat === 'spread' && !(template.naam || '').startsWith('S')) return false;
 
-    if (aantalAdvertenties === 3) return false;
-    if (aantalAdvertenties > 0) {
-      if (!template.advertentie) return false;
-      if (aantalAdvertenties === 1 && advertenties.length === 1) {
-        const adv = advertenties[0];
-        return (!adv.kolommen || adv.kolommen == template.advertentie.kolommen) &&
-               (!adv.vorm || adv.vorm === template.advertentie.vorm) &&
-               (!adv.plek || adv.plek === template.advertentie.plek) &&
-               matchesTemplate(template);
-      }
-      return false;
+  // Advertentie 1: filter op basis van gekozen formaat -> 5e teken (letter) van de templatecode
+  if (aantalAdvertenties >= 1 && advertenties[0] && advertenties[0].formaat) {
+    const gewensteLetter = advertentieLetterMap[advertenties[0].formaat];
+    if (gewensteLetter) {
+      const code = (template.naam || '').slice(0, 5); // bv. "S206E" uit "S206E variant 1"
+      if (code[4] !== gewensteLetter) return false;
     }
-    return !template.advertentie && matchesTemplate(template);
-  });
+  }
 
+  // (Je eerdere limiet)
+  if (aantalAdvertenties === 3) return false;
+
+  // Alleen nog op artikelen matchen
+  return matchesTemplate(template);
+});
+  
   return (
     <div className="p-6 space-y-6 text-[#002f6c] min-h-screen" style={{ backgroundImage: 'linear-gradient(to bottom right, #b3cce6, #e6edf5)' }}>
       <div className="flex items-center">
@@ -495,7 +512,7 @@ function TemplateMatcher() {
             onChange={(e) => {
               const aantal = Number(e.target.value);
               setAantalAdvertenties(aantal);
-              setAdvertenties([...Array(aantal)].map(() => ({ kolommen: "", vorm: "", plek: "" })));
+              setAdvertenties([...Array(aantal)].map(() => ({ formaat: "" })));
             }}
           >
             <option value="0">0</option>
@@ -505,32 +522,60 @@ function TemplateMatcher() {
           </select>
 
           {aantalAdvertenties <= 2 && [...Array(aantalAdvertenties)].map((_, index) => (
-            <div key={index} className="flex flex-wrap gap-1 mt-2 items-end">
-              <div className="flex flex-col mr-1">
-                <label className="text-sm font-semibold mb-1 block">Advertentie {index + 1}: Aantal kolommen</label>
-                <select className="border border-[#002f6c] w-36 p-1 rounded" value={advertenties[index]?.kolommen || ''} onChange={(e) => updateAdvertentie(index, 'kolommen', e.target.value)}>
-                  {[<option key="" value="">Selecteer</option>, ...[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n}</option>)]}
-                </select>
-              </div>
-              <div className="flex flex-col mr-1">
-                <label className="text-sm font-semibold mb-1 block">Vorm</label>
-                <select className="border border-[#002f6c] w-36 p-1 rounded" value={advertenties[index]?.vorm || ''} onChange={(e) => updateAdvertentie(index, 'vorm', e.target.value)}>
-                  <option value="">Selecteer</option>
-                  <option value="plat">plat</option>
-                  <option value="rechthoek liggend">rechthoek liggend</option>
-                  <option value="rechthoek staand">rechthoek staand</option>
-                  <option value="vierkant">vierkant</option>
-                </select>
-              </div>
-              <div className="flex flex-col">
-                <label className="text-sm font-semibold mb-1 block">Plek</label>
-                <select className="border border-[#002f6c] w-36 p-1 rounded" value={advertenties[index]?.plek || ''} onChange={(e) => updateAdvertentie(index, 'plek', e.target.value)}>
-                  <option value="">Selecteer</option>
-                  <option value="linkerpagina">linkerpagina</option>
-                  <option value="rechterpagina">rechterpagina</option>
-                </select>
-              </div>
-            </div>
+<div key={index} className="flex flex-wrap gap-1 mt-2 items-end">
+  {index === 0 ? (
+    <div className="flex flex-col mr-1">
+      <label className="text-sm font-semibold mb-1 block">Advertentie 1: formaat</label>
+      <select
+        className="border border-[#002f6c] w-56 p-1 rounded"
+        value={advertenties[index]?.formaat || ''}
+        onChange={(e) => updateAdvertentie(index, 'formaat', e.target.value)}
+      >
+        <option value="">Selecteer</option>
+        <option value="W41">W41 (50x30 mm)</option>
+        <option value="W39">W39 (50x46 mm)</option>
+        <option value="W37">W37 (50x70 mm)</option>
+        <option value="W36">W36 (104x46 mm)</option>
+        <option value="W35">W35 (50x94 mm)</option>
+        <option value="W32">W32 (104x70 mm)</option>
+        <option value="W29">W29 (104x94 mm)</option>
+        <option value="W23">W23 (158x94 mm)</option>
+        <option value="W21">W21 (266x70 mm)</option>
+        <option value="W17">W17 (104x190 mm)</option>
+        <option value="W16">W16 (266x94 mm)</option>
+        <option value="W13">W13 (158x166 mm)</option>
+        <option value="W4">W4 (266x190 mm)</option>
+      </select>
+    </div>
+  ) : (
+    <>
+      <div className="flex flex-col mr-1">
+        <label className="text-sm font-semibold mb-1 block">Advertentie {index + 1}: Aantal kolommen</label>
+        <select className="border border-[#002f6c] w-36 p-1 rounded" value={advertenties[index]?.kolommen || ''} onChange={(e) => updateAdvertentie(index, 'kolommen', e.target.value)}>
+          {[<option key="" value="">Selecteer</option>, ...[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n}</option>)]}
+        </select>
+      </div>
+      <div className="flex flex-col mr-1">
+        <label className="text-sm font-semibold mb-1 block">Vorm</label>
+        <select className="border border-[#002f6c] w-36 p-1 rounded" value={advertenties[index]?.vorm || ''} onChange={(e) => updateAdvertentie(index, 'vorm', e.target.value)}>
+          <option value="">Selecteer</option>
+          <option value="plat">plat</option>
+          <option value="rechthoek liggend">rechthoek liggend</option>
+          <option value="rechthoek staand">rechthoek staand</option>
+          <option value="vierkant">vierkant</option>
+        </select>
+      </div>
+      <div className="flex flex-col">
+        <label className="text-sm font-semibold mb-1 block">Plek</label>
+        <select className="border border-[#002f6c] w-36 p-1 rounded" value={advertenties[index]?.plek || ''} onChange={(e) => updateAdvertentie(index, 'plek', e.target.value)}>
+          <option value="">Selecteer</option>
+          <option value="linkerpagina">linkerpagina</option>
+          <option value="rechterpagina">rechterpagina</option>
+        </select>
+      </div>
+    </>
+  )}
+</div>
           ))}
 
           {aantalAdvertenties === 3 && (
