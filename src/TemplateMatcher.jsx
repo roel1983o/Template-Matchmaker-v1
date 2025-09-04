@@ -369,12 +369,17 @@ const advertentieLetterMap = {
   W4:  'N',
 };
 
-const TooltipImage = ({ src = "advertentiematen.jpg", alt = "Advertentiematen" }) => (
+const TooltipImage = ({ src = "/advertentiematen.jpg", alt = "Advertentiematen" }) => (
   <span className="relative group inline-flex items-center ml-2 cursor-help select-none" aria-label="Toon voorbeeld">
-    <span className="text-sm align-middle">ℹ️</span>
-    <span className="absolute left-0 top-full mt-2 hidden group-hover:block z-50">
-      <span className="block rounded-lg border border-[#002f6c] bg-white shadow-lg p-1">
-        <img src={src} alt={alt} className="rounded" style={{ display: 'block' }} />
+    <span className="text-base align-middle">ℹ️</span>
+    <span className="absolute left-0 top-full mt-2 hidden group-hover:block z-[9999]">
+      <span className="block rounded-lg border border-[#002f6c] bg-white shadow-2xl p-2">
+        <img
+          src={src}
+          alt={alt}
+          className="rounded max-w-none w-auto h-auto"
+          style={{ display: 'block' }}
+        />
       </span>
     </span>
   </span>
@@ -508,7 +513,7 @@ function TemplateMatcher() {
       </div>
 
       <div className="bg-white/40 rounded-xl p-4">
-        <h2 className="text-lg font-bold mb-4 flex items-center">📢 Advertenties <TooltipImage src="advertentiematen.jpg" alt="Advertentiematen" /></h2>
+        <h2 className="text-lg font-bold mb-4 flex items-center">📢 Advertenties <TooltipImage src="/advertentiematen.jpg" alt="Advertentiematen" /></h2>
         <div className="mb-6">
           <label className="text-sm font-semibold mb-1 block">Aantal advertenties</label>
           <select
