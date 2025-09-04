@@ -447,7 +447,7 @@ export default function TemplateMatcher() {
     {formaten.map((formaat) => (
       <div key={formaat} className="flex flex-col">
         <label htmlFor={formaat} className="text-sm font-semibold mb-1">
-          <span className='font-bold'>{formaat}</span> <span className='font-normal'>({formaat === "XS" ? 1000 : formaat === "S" ? 1800 : formaat === "M" ? 2800 : formaat === "L" ? 4000 : formaat === "XL" ? 5400 : 7200} tekens)</span>
+          <span className='font-bold'>{formaat}</span> <span className='font-normal'>({formaat === "XS" ? 1000 : formaat === "Sn" ? 1800 : formaat === "Sl" ? 1800 : formaat === "Mn" ? 2800 : formaat === "Ml" ? 2800 : formaat === "L" ? 4000 : formaat === "XL" ? 5400 : 7200} tekens)</span>
         </label>
         <Input
           id={formaat}
