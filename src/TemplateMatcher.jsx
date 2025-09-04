@@ -508,7 +508,7 @@ function TemplateMatcher() {
       </div>
 
       <div className="bg-white/40 rounded-xl p-4">
-        <h2 className="text-lg font-bold mb-4 flex items-center">📢 Advertentiematen <TooltipImage src="advertentiematen.jpg" alt="Advertentiematen" /></h2>
+        <h2 className="text-lg font-bold mb-4 flex items-center">📢 Advertenties <TooltipImage src="advertentiematen.jpg" alt="Advertentiematen" /></h2>
         <div className="mb-6">
           <label className="text-sm font-semibold mb-1 block">Aantal advertenties</label>
           <select
