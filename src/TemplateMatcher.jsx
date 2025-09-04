@@ -349,16 +349,16 @@ const templates = [
   { naam: "S517M variant 5", artikelen: ["L", "Ml", "Sl", "Sn", "Sn"], preview: "S517M.jpg" },
   { naam: "S517M variant 6", artikelen: ["L", "Ml", "Sl", "Sl", "Sn"], preview: "S517M.jpg" },
   { naam: "S517M variant 7", artikelen: ["L", "Ml", "Sn", "Sl", "Sn"], preview: "S517M.jpg" },
-
 ];
 
 const formaten = ["XS", "Sn", "Sl", "Mn", "Ml", "L", "XL", "XXL"];
-const formaatVolgorde = { XXL: 0, XL: 1, L: 2, Ml: 3, Mn: 4, Sl: 5, Sn: 6, XS: 7 };
+const formaatVolgorde = { XS: 1, Sn: 2, Sl: 3, Mn: 4, Ml: 5, L: 6, XL: 7, XXL: 8 };
 
-export default function TemplateMatcher() {
+function TemplateMatcher() {
   const [geselecteerd, setGeselecteerd] = useState({});
   const [aantalAdvertenties, setAantalAdvertenties] = useState(0);
   const [advertenties, setAdvertenties] = useState([]);
+  const [paginaformaat, setPaginaformaat] = useState('both');
 
   const updateAantal = (formaat, aantal) => {
     setGeselecteerd((prev) => ({ ...prev, [formaat]: parseInt(aantal) || 0 }));
@@ -420,13 +420,15 @@ export default function TemplateMatcher() {
   };
 
   const mogelijkeTemplates = templates.filter((template) => {
+    // Filter op paginaformaat (E = enkel, S = spread)
+    if (paginaformaat === 'single' && !(template.naam || '').startsWith('E')) return false;
+    if (paginaformaat === 'spread' && !(template.naam || '').startsWith('S')) return false;
+
     if (aantalAdvertenties === 3) return false;
     if (aantalAdvertenties > 0) {
       if (!template.advertentie) return false;
       if (aantalAdvertenties === 1 && advertenties.length === 1) {
         const adv = advertenties[0];
-        const incompleet = [adv.kolommen, adv.vorm, adv.plek].some((v) => v === "");
-        // if (incompleet) return !!template.advertentie;
         return (!adv.kolommen || adv.kolommen == template.advertentie.kolommen) &&
                (!adv.vorm || adv.vorm === template.advertentie.vorm) &&
                (!adv.plek || adv.plek === template.advertentie.plek) &&
@@ -439,84 +441,100 @@ export default function TemplateMatcher() {
 
   return (
     <div className="p-6 space-y-6 text-[#002f6c] min-h-screen" style={{ backgroundImage: 'linear-gradient(to bottom right, #b3cce6, #e6edf5)' }}>
-      <h1 className="text-2xl font-extrabold tracking-tight">Template-tool <span className="italic">The Perfect Match</span> <span className="text-sm font-normal align-top ml-2 bg-white/40 px-2 py-0.5 rounded">BETA</span></h1>
+      <h1 className="text-2xl font-extrabold tracking-tight">De Limburger <span className="italic"> Template Matcher</span> <span className="text-sm font-normal align-top ml-2 bg-white/40 px-2 py-0.5 rounded">BETA</span></h1>
 
       <div className="bg-white/40 rounded-xl p-4">
-  <h2 className="text-lg font-bold mb-4">📰 Artikelen</h2>
-  <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-xl">
-    {formaten.map((formaat) => (
-      <div key={formaat} className="flex flex-col">
-        <label htmlFor={formaat} className="text-sm font-semibold mb-1">
-          <span className='font-bold'>{formaat}</span> <span className='font-normal'>({formaat === "XS" ? 1000 : formaat === "Sn" ? 1800 : formaat === "Sl" ? 1800 : formaat === "Mn" ? 2800 : formaat === "Ml" ? 2800 : formaat === "L" ? 4000 : formaat === "XL" ? 5400 : 7200} tekens)</span>
-        </label>
-        <Input
-          id={formaat}
-          type="number"
-          min="0"
-          className="border border-[#002f6c]"
-          value={geselecteerd[formaat] || ""}
-          onChange={(e) => updateAantal(formaat, e.target.value)}
-        />
-      </div>
-    ))}
-  </div>
-</div>
-
-<div className="bg-white/40 rounded-xl p-4">
-  <h2 className="text-lg font-bold mb-4">📢 Advertenties</h2>
-  <div className="mb-6">
-        <label className="text-sm font-semibold mb-1 block">Aantal advertenties</label>
-        <select
-          className="border border-[#002f6c] rounded p-2"
-          value={aantalAdvertenties}
-          onChange={(e) => {
-            const aantal = Number(e.target.value);
-            setAantalAdvertenties(aantal);
-            setAdvertenties([...Array(aantal)].map(() => ({ kolommen: "", vorm: "", plek: "" })));
-          }}
-        >
-          <option value="0">0</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-<option value="3">3</option>
-        </select>
-
-        {aantalAdvertenties <= 2 && [...Array(aantalAdvertenties)].map((_, index) => (
-  <div key={index} className="flex flex-wrap gap-1 mt-2 items-end">
-    <div className="flex flex-col mr-1">
-      <label className="text-sm font-semibold mb-1 block">Advertentie {index + 1}: Aantal kolommen</label>
-      <select className="border border-[#002f6c] w-36 p-1 rounded" value={advertenties[index]?.kolommen || ''} onChange={(e) => updateAdvertentie(index, 'kolommen', e.target.value)}>
-        {[<option key="" value="">Selecteer</option>, ...[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n}</option>)]}
-      </select>
-    </div>
-    <div className="flex flex-col mr-1">
-      <label className="text-sm font-semibold mb-1 block">Vorm</label>
-      <select className="border border-[#002f6c] w-36 p-1 rounded" value={advertenties[index]?.vorm || ''} onChange={(e) => updateAdvertentie(index, 'vorm', e.target.value)}>
-        <option value="">Selecteer</option>
-        <option value="plat">plat</option>
-        <option value="rechthoek liggend">rechthoek liggend</option>
-        <option value="rechthoek staand">rechthoek staand</option>
-        <option value="vierkant">vierkant</option>
-      </select>
-    </div>
-    <div className="flex flex-col">
-      <label className="text-sm font-semibold mb-1 block">Plek</label>
-      <select className="border border-[#002f6c] w-36 p-1 rounded" value={advertenties[index]?.plek || ''} onChange={(e) => updateAdvertentie(index, 'plek', e.target.value)}>
-        <option value="">Selecteer</option>
-        <option value="linkerpagina">linkerpagina</option>
-        <option value="rechterpagina">rechterpagina</option>
-      </select>
-    </div>
-  </div>
-))}
-
-{aantalAdvertenties === 3 && (
-  <p className="mt-4 text-sm text-[#002f6c] bg-white/50 p-2 rounded">
-    Geen templates beschikbaar met drie of meer advertenties. Pagina moet handmatig door vormgever worden opgebouwd.
-  </p>
-)}
+        <h2 className="text-lg font-bold mb-4">📐 Paginaformaat</h2>
+        <div className="mb-2">
+          <label className="text-sm font-semibold mb-1 block">Kies het formaat van de pagina die je wil plannen</label>
+          <select
+            className="border border-[#002f6c] rounded p-2 w-full max-w-md"
+            value={paginaformaat}
+            onChange={(e) => setPaginaformaat(e.target.value)}
+          >
+            <option value="both">Geen keuze</option>
+            <option value="single">Enkele pagina</option>
+            <option value="spread">Spreadpagina</option>
+          </select>
         </div>
-</div>
+      </div>
+
+      <div className="bg-white/40 rounded-xl p-4">
+        <h2 className="text-lg font-bold mb-4">📰 Artikelen</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-xl">
+          {formaten.map((formaat) => (
+            <div key={formaat} className="flex flex-col">
+              <label htmlFor={formaat} className="text-sm font-semibold mb-1">
+                <span className='font-bold'>{formaat}</span> <span className='font-normal'>({formaat === "XS" ? 1000 : formaat === "Sn" ? 1800 : formaat === "Sl" ? 1800 : formaat === "Mn" ? 2800 : formaat === "Ml" ? 2800 : formaat === "L" ? 4000 : formaat === "XL" ? 5400 : 7200} tekens)</span>
+              </label>
+              <Input
+                id={formaat}
+                type="number"
+                min="0"
+                className="border border-[#002f6c]"
+                value={geselecteerd[formaat] || ""}
+                onChange={(e) => updateAantal(formaat, e.target.value)}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-white/40 rounded-xl p-4">
+        <h2 className="text-lg font-bold mb-4">📢 Advertenties</h2>
+        <div className="mb-6">
+          <label className="text-sm font-semibold mb-1 block">Aantal advertenties</label>
+          <select
+            className="border border-[#002f6c] rounded p-2"
+            value={aantalAdvertenties}
+            onChange={(e) => {
+              const aantal = Number(e.target.value);
+              setAantalAdvertenties(aantal);
+              setAdvertenties([...Array(aantal)].map(() => ({ kolommen: "", vorm: "", plek: "" })));
+            }}
+          >
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+
+          {aantalAdvertenties <= 2 && [...Array(aantalAdvertenties)].map((_, index) => (
+            <div key={index} className="flex flex-wrap gap-1 mt-2 items-end">
+              <div className="flex flex-col mr-1">
+                <label className="text-sm font-semibold mb-1 block">Advertentie {index + 1}: Aantal kolommen</label>
+                <select className="border border-[#002f6c] w-36 p-1 rounded" value={advertenties[index]?.kolommen || ''} onChange={(e) => updateAdvertentie(index, 'kolommen', e.target.value)}>
+                  {[<option key="" value="">Selecteer</option>, ...[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n}</option>)]}
+                </select>
+              </div>
+              <div className="flex flex-col mr-1">
+                <label className="text-sm font-semibold mb-1 block">Vorm</label>
+                <select className="border border-[#002f6c] w-36 p-1 rounded" value={advertenties[index]?.vorm || ''} onChange={(e) => updateAdvertentie(index, 'vorm', e.target.value)}>
+                  <option value="">Selecteer</option>
+                  <option value="plat">plat</option>
+                  <option value="rechthoek liggend">rechthoek liggend</option>
+                  <option value="rechthoek staand">rechthoek staand</option>
+                  <option value="vierkant">vierkant</option>
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold mb-1 block">Plek</label>
+                <select className="border border-[#002f6c] w-36 p-1 rounded" value={advertenties[index]?.plek || ''} onChange={(e) => updateAdvertentie(index, 'plek', e.target.value)}>
+                  <option value="">Selecteer</option>
+                  <option value="linkerpagina">linkerpagina</option>
+                  <option value="rechterpagina">rechterpagina</option>
+                </select>
+              </div>
+            </div>
+          ))}
+
+          {aantalAdvertenties === 3 && (
+            <p className="mt-4 text-sm text-[#002f6c] bg-white/50 p-2 rounded">
+              Geen templates beschikbaar met drie of meer advertenties. Pagina moet handmatig door vormgever worden opgebouwd.
+            </p>
+          )}
+        </div>
+      </div>
 
       <h2 className="text-xl font-bold mt-8">Mogelijke templates:</h2>
       {mogelijkeTemplates.length > 0 ? (
@@ -538,8 +556,10 @@ export default function TemplateMatcher() {
           ))}
         </div>
       ) : (
-        <p className="text-[#002f6c]">Geen passende templates gevonden.</p>
+        <p className="text-[#002f6c]">Geen templates gevonden die aan de criteria voldoen.</p>
       )}
     </div>
   );
 }
+
+export default TemplateMatcher;
