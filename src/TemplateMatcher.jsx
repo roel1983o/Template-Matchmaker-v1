@@ -374,7 +374,7 @@ const TooltipImage = ({ src = "advertentiematen.jpg", alt = "Advertentiematen" }
     <span className="text-sm align-middle">ℹ️</span>
     <span className="absolute left-0 top-full mt-2 hidden group-hover:block z-50">
       <span className="block rounded-lg border border-[#002f6c] bg-white shadow-lg p-1">
-        <img src={src} alt={alt} className="max-w-xs max-h-64 rounded" />
+        <img src={src} alt={alt} className="rounded" style={{ display: 'block' }} />
       </span>
     </span>
   </span>
