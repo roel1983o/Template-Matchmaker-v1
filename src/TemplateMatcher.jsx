@@ -484,31 +484,40 @@ function TemplateMatcher() {
   };
 
   const mogelijkeTemplates = templates.filter((template) => {
-    if (paginaformaat === 'single' && !(template.naam || '').startsWith('E')) return false;
-    if (paginaformaat === 'spread' && !(template.naam || '').startsWith('S')) return false;
+  // Eerste schifting o.b.v. Aantal advertenties
+  const code = (template.naam || '').slice(0, 5);
+  const eindletter = code[4];
 
-    // NIEUW: combinatie-regel als er precies 2 advertenties zijn
-    if (aantalAdvertenties === 2 && advertenties[0]?.formaat && advertenties[1]?.formaat) {
-      const key = `${advertenties[0].formaat}|${advertenties[1].formaat}`;
-      const toegestaneEindletters = combinatieMap[key] || combinatieMap[`${advertenties[1].formaat}|${advertenties[0].formaat}`];
-      if (toegestaneEindletters && toegestaneEindletters.length > 0) {
-        const code = (template.naam || '').slice(0, 5);
-        const eindletter = code[4];
-        if (!toegestaneEindletters.includes(eindletter)) return false;
-      }
-    } else if (aantalAdvertenties >= 1 && advertenties[0] && advertenties[0].formaat) {
-      // Bestaande regel voor 1 advertentie
-      const gewensteLetter = advertentieLetterMap[advertenties[0].formaat];
-      if (gewensteLetter) {
-        const code = (template.naam || '').slice(0, 5);
-        if (code[4] !== gewensteLetter) return false;
-      }
+  if (aantalAdvertenties === 0) {
+    // Alleen templates met eindletter A
+    if (eindletter !== 'A') return false;
+  } else if (aantalAdvertenties === 1 || aantalAdvertenties === 2) {
+    // Templates met eindletter A uitsluiten
+    if (eindletter === 'A') return false;
+  }
+
+  // Paginaformaat-filter
+  if (paginaformaat === 'single' && !(template.naam || '').startsWith('E')) return false;
+  if (paginaformaat === 'spread' && !(template.naam || '').startsWith('S')) return false;
+
+  // Combinatieregel als er precies 2 advertenties zijn
+  if (aantalAdvertenties === 2 && advertenties[0]?.formaat && advertenties[1]?.formaat) {
+    const key = `${advertenties[0].formaat}|${advertenties[1].formaat}`;
+    const toegestaneEindletters =
+      combinatieMap[key] || combinatieMap[`${advertenties[1].formaat}|${advertenties[0].formaat}`];
+    if (toegestaneEindletters && toegestaneEindletters.length > 0) {
+      if (!toegestaneEindletters.includes(eindletter)) return false;
     }
+  } else if (aantalAdvertenties === 1 && advertenties[0]?.formaat) {
+    // Regel voor 1 advertentie
+    const gewensteLetter = advertentieLetterMap[advertenties[0].formaat];
+    if (gewensteLetter && eindletter !== gewensteLetter) return false;
+  }
 
-    if (aantalAdvertenties === 3) return false;
+  if (aantalAdvertenties === 3) return false;
 
-    return matchesTemplate(template);
-  });
+  return matchesTemplate(template);
+});
   
   return (
     <div className="p-6 space-y-6 text-[#002f6c] min-h-screen" style={{ backgroundImage: 'linear-gradient(to bottom right, #b3cce6, #e6edf5)' }}>
