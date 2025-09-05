@@ -514,7 +514,7 @@ function TemplateMatcher() {
     <div className="p-6 space-y-6 text-[#002f6c] min-h-screen" style={{ backgroundImage: 'linear-gradient(to bottom right, #b3cce6, #e6edf5)' }}>
       <div className="flex items-center">
         <img src="https://focus.limburger.nl/raw/prod-mh-design-system/7.14.1/dl/logos/logo-main.svg" alt="De Limburger logo" className="h-12 mr-4" />
-        <h1 className="text-3xl font-extrabold tracking-tight">Template Matcher</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight">Template Matchmaker</h1>
         <span className="text-sm font-normal align-top ml-2 bg-white/40 px-2 py-0.5 rounded">BETA</span>
       </div>
 
