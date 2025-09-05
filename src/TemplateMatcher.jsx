@@ -561,7 +561,7 @@ function TemplateMatcher() {
                 id={formaat}
                 type="number"
                 min="0"
-                className="border border-[#002f6c]"
+                className="border border-[#002f6c] w-[115%]"
                 value={geselecteerd[formaat] || ""}
                 onChange={(e) => updateAantal(formaat, e.target.value)}
               />
