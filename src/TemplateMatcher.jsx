@@ -385,6 +385,17 @@ const TooltipImage = ({ src = "/advertentiematen.jpg", alt = "Advertentiematen" 
   </span>
 );
 
+const WrenchTooltip = () => (
+  <span className="relative group inline-flex items-center ml-2 cursor-help select-none" aria-label="Reshape info">
+    <span className="text-lg align-middle">🔧</span>
+    <span className="absolute left-0 top-full mt-2 hidden group-hover:block z-[9999] w-64">
+      <span className="block rounded-lg border border-[#002f6c] bg-white shadow-2xl p-2 text-sm font-normal text-[#002f6c]">
+        Een of meerdere vormen op de template moeten een handmatige reshape krijgen, van nieuws naar lichte kop of omgekeerd.
+      </span>
+    </span>
+  </span>
+);
+
 function TemplateMatcher() {
   const [geselecteerd, setGeselecteerd] = useState({});
   const [aantalAdvertenties, setAantalAdvertenties] = useState(0);
@@ -602,7 +613,10 @@ function TemplateMatcher() {
           {mogelijkeTemplates.map((template) => (
             <Card key={template.naam} className="border border-[#002f6c]">
               <CardContent className="p-4">
-                <p className="font-bold text-2xl text-[#002f6c] flex items-center">{(template.naam || '').slice(0,5)}{(template.naam || '').toLowerCase().includes('variant') && <span className="ml-2">🔧</span>}</p>
+                <p className="font-bold text-2xl text-[#002f6c] flex items-center">
+                  {(template.naam || '').slice(0,5)}
+                  {(template.naam || '').toLowerCase().includes('variant') && <WrenchTooltip />}
+                </p>
                 {visualiseerBlokjes(template)}
                 {template.preview && (
                   <img
