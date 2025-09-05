@@ -369,6 +369,28 @@ const advertentieLetterMap = {
   W4:  'N',
 };
 
+// Nieuwe tussenlaag voor combinatie van advertentie 1 + 2
+const combinatieMap = {
+  'W17|W13': ['N'], 'W13|W17': ['N'],
+  'W17|W23': ['N'], 'W23|W17': ['N'],
+  'W23|W32': ['L','M'], 'W32|W23': ['L','M'],
+  'W29|W23': ['L'], 'W23|W29': ['L'],
+  'W29|W29': ['K'],
+  'W29|W32': ['K'], 'W32|W29': ['K'],
+  'W32|W32': ['J'],
+  'W29|W35': ['I'], 'W35|W29': ['I'],
+  'W29|W37': ['I'], 'W37|W29': ['I'],
+  'W29|W39': ['I'], 'W39|W29': ['I'],
+  'W35|W35': ['H'],
+  'W35|W37': ['H'], 'W37|W35': ['H'],
+  'W35|W39': ['H'], 'W39|W35': ['H'],
+  'W37|W37': ['G'],
+  'W37|W39': ['G'], 'W39|W37': ['G'],
+  'W37|W41': ['G'], 'W41|W37': ['G'],
+  'W39|W39': ['E','F'],
+  'W39|W41': ['E'], 'W41|W39': ['E'],
+};
+
 const TooltipImage = ({ src = "/advertentiematen.jpg", alt = "Advertentiematen" }) => (
   <span className="relative group inline-flex items-center ml-2 cursor-help select-none" aria-label="Toon voorbeeld">
     <span className="text-base align-middle">ℹ️</span>
@@ -465,7 +487,17 @@ function TemplateMatcher() {
     if (paginaformaat === 'single' && !(template.naam || '').startsWith('E')) return false;
     if (paginaformaat === 'spread' && !(template.naam || '').startsWith('S')) return false;
 
-    if (aantalAdvertenties >= 1 && advertenties[0] && advertenties[0].formaat) {
+    // NIEUW: combinatie-regel als er precies 2 advertenties zijn
+    if (aantalAdvertenties === 2 && advertenties[0]?.formaat && advertenties[1]?.formaat) {
+      const key = `${advertenties[0].formaat}|${advertenties[1].formaat}`;
+      const toegestaneEindletters = combinatieMap[key] || combinatieMap[`${advertenties[1].formaat}|${advertenties[0].formaat}`];
+      if (toegestaneEindletters && toegestaneEindletters.length > 0) {
+        const code = (template.naam || '').slice(0, 5);
+        const eindletter = code[4];
+        if (!toegestaneEindletters.includes(eindletter)) return false;
+      }
+    } else if (aantalAdvertenties >= 1 && advertenties[0] && advertenties[0].formaat) {
+      // Bestaande regel voor 1 advertentie
       const gewensteLetter = advertentieLetterMap[advertenties[0].formaat];
       if (gewensteLetter) {
         const code = (template.naam || '').slice(0, 5);
