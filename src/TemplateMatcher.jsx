@@ -544,58 +544,29 @@ function TemplateMatcher() {
 
           {aantalAdvertenties <= 2 && [...Array(aantalAdvertenties)].map((_, index) => (
 <div key={index} className="flex flex-wrap gap-1 mt-2 items-end">
-  {index === 0 ? (
-    <div className="flex flex-col mr-1">
-      <label className="text-sm font-semibold mb-1 block">Advertentie 1: formaat</label>
-      <select
-        className="border border-[#002f6c] w-56 p-1 rounded"
-        value={advertenties[index]?.formaat || ''}
-        onChange={(e) => updateAdvertentie(index, 'formaat', e.target.value)}
-      >
-        <option value="">Selecteer</option>
-        <option value="W41">W41 (50x30 mm)</option>
-        <option value="W39">W39 (50x46 mm)</option>
-        <option value="W37">W37 (50x70 mm)</option>
-        <option value="W36">W36 (104x46 mm)</option>
-        <option value="W35">W35 (50x94 mm)</option>
-        <option value="W32">W32 (104x70 mm)</option>
-        <option value="W29">W29 (104x94 mm)</option>
-        <option value="W23">W23 (158x94 mm)</option>
-        <option value="W21">W21 (266x70 mm)</option>
-        <option value="W17">W17 (104x190 mm)</option>
-        <option value="W16">W16 (266x94 mm)</option>
-        <option value="W13">W13 (158x166 mm)</option>
-        <option value="W4">W4 (266x190 mm)</option>
-      </select>
-    </div>
-  ) : (
-    <>
-      <div className="flex flex-col mr-1">
-        <label className="text-sm font-semibold mb-1 block">Advertentie {index + 1}: Aantal kolommen</label>
-        <select className="border border-[#002f6c] w-36 p-1 rounded" value={advertenties[index]?.kolommen || ''} onChange={(e) => updateAdvertentie(index, 'kolommen', e.target.value)}>
-          {[<option key="" value="">Selecteer</option>, ...[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n}</option>)]}
-        </select>
-      </div>
-      <div className="flex flex-col mr-1">
-        <label className="text-sm font-semibold mb-1 block">Vorm</label>
-        <select className="border border-[#002f6c] w-36 p-1 rounded" value={advertenties[index]?.vorm || ''} onChange={(e) => updateAdvertentie(index, 'vorm', e.target.value)}>
-          <option value="">Selecteer</option>
-          <option value="plat">plat</option>
-          <option value="rechthoek liggend">rechthoek liggend</option>
-          <option value="rechthoek staand">rechthoek staand</option>
-          <option value="vierkant">vierkant</option>
-        </select>
-      </div>
-      <div className="flex flex-col">
-        <label className="text-sm font-semibold mb-1 block">Plek</label>
-        <select className="border border-[#002f6c] w-36 p-1 rounded" value={advertenties[index]?.plek || ''} onChange={(e) => updateAdvertentie(index, 'plek', e.target.value)}>
-          <option value="">Selecteer</option>
-          <option value="linkerpagina">linkerpagina</option>
-          <option value="rechterpagina">rechterpagina</option>
-        </select>
-      </div>
-    </>
-  )}
+  <div className="flex flex-col mr-1">
+    <label className="text-sm font-semibold mb-1 block">Advertentie {index + 1}: formaat</label>
+    <select
+      className="border border-[#002f6c] w-56 p-1 rounded"
+      value={advertenties[index]?.formaat || ''}
+      onChange={(e) => updateAdvertentie(index, 'formaat', e.target.value)}
+    >
+      <option value="">Selecteer</option>
+      <option value="W41">W41 (50x30 mm)</option>
+      <option value="W39">W39 (50x46 mm)</option>
+      <option value="W37">W37 (50x70 mm)</option>
+      <option value="W36">W36 (104x46 mm)</option>
+      <option value="W35">W35 (50x94 mm)</option>
+      <option value="W32">W32 (104x70 mm)</option>
+      <option value="W29">W29 (104x94 mm)</option>
+      <option value="W23">W23 (158x94 mm)</option>
+      <option value="W21">W21 (266x70 mm)</option>
+      <option value="W17">W17 (104x190 mm)</option>
+      <option value="W16">W16 (266x94 mm)</option>
+      <option value="W13">W13 (158x166 mm)</option>
+      <option value="W4">W4 (266x190 mm)</option>
+    </select>
+  </div>
 </div>
           ))}
 
