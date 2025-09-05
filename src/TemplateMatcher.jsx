@@ -505,8 +505,15 @@ function TemplateMatcher() {
     const key = `${advertenties[0].formaat}|${advertenties[1].formaat}`;
     const toegestaneEindletters =
       combinatieMap[key] || combinatieMap[`${advertenties[1].formaat}|${advertenties[0].formaat}`];
-    if (toegestaneEindletters && toegestaneEindletters.length > 0) {
-      if (!toegestaneEindletters.includes(eindletter)) return false;
+    
+    // Als er geen geldige combinatie bestaat, blokkeer alle templates
+    if (!toegestaneEindletters || toegestaneEindletters.length === 0) {
+      return false;
+    }
+    
+    // Als er wel een geldige combinatie bestaat, check of deze template de juiste eindletter heeft
+    if (!toegestaneEindletters.includes(eindletter)) {
+      return false;
     }
   } else if (aantalAdvertenties === 1 && advertenties[0]?.formaat) {
     // Regel voor 1 advertentie
