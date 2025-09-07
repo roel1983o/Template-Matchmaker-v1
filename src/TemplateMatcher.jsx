@@ -558,7 +558,8 @@ function TemplateMatcher() {
           {formaten.map((formaat) => (
             <div key={formaat} className="flex flex-col">
               <label htmlFor={formaat} className="text-sm font-semibold mb-1">
-                <span className='font-bold'>{formaat}</span> <span className='font-normal'>({formaat === "XS" ? 1000 : formaat === "S_nws" ? 1800 : formaat === "S_lk" ? 1800 : formaat === "M_nws" ? 2800 : formaat === "M_lk" ? 2800 : formaat === "L" ? 4000 : formaat === "XL" ? 5400 : 7200} tekens)</span>
+                {formatLabel(formaat)}{' '}
+                <span className='font-normal'>({formaat === "XS" ? 1000 : formaat === "S_nws" ? 1800 : formaat === "S_lk" ? 1800 : formaat === "M_nws" ? 2800 : formaat === "M_lk" ? 2800 : formaat === "L" ? 4000 : formaat === "XL" ? 5400 : 7200} tekens)</span>
               </label>
               <Input
                 id={formaat}
@@ -572,6 +573,7 @@ function TemplateMatcher() {
           ))}
         </div>
       </div>
+    </div>
 
       <div className="bg-white/40 rounded-xl p-4">
         <h2 className="text-lg font-bold mb-4 flex items-center">📢 Advertenties <TooltipImage src="/advertentiematen.jpg" alt="Advertentiematen" /></h2>
