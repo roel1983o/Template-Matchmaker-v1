@@ -389,18 +389,6 @@ const combinatieMap = {
   'W39|W41': ['E'], 'W41|W39': ['E'],
 };
 
-const formatLabel = (formaat) => {
-  if (["S_nws", "S_lk", "M_nws", "M_lk"].includes(formaat)) {
-    const [left, right] = formaat.split("_");
-    return (
-      <span>
-        <span className="font-bold">{left}</span> <span className="font-normal">{right}</span>
-      </span>
-    );
-  }
-  return <span className="font-bold">{formaat}</span>;
-};
-
 const TooltipImage = ({ src = "/advertentiematen.jpg", alt = "Advertentiematen" }) => (
   <span className="relative group inline-flex items-center ml-2 cursor-help select-none" aria-label="Toon voorbeeld">
     <span className="text-base align-middle">ℹ️</span>
@@ -462,7 +450,15 @@ function TemplateMatcher() {
   };
 
   const visualiseerBlokjes = (template) => {
+    const teller = {};
+    for (let formaat of template.artikelen) {
+      teller[formaat] = (teller[formaat] || 0) + 1;
+    }
     const kopie = { ...geselecteerd };
+    for (let formaat in kopie) {
+      teller[formaat] = (teller[formaat] || 0) - kopie[formaat];
+    }
+
     const blokjeObjecten = template.artikelen.map((formaat) => {
       const isIngevuld = (kopie[formaat] || 0) > 0;
       if (isIngevuld) kopie[formaat]--;
@@ -478,7 +474,7 @@ function TemplateMatcher() {
       <div className="mt-2 flex flex-wrap">
         {blokjeObjecten.map((blok, i) => (
           <span key={i} className={`inline-block px-2 py-1 m-0.5 ${blok.kleur} text-white rounded text-sm font-bold`}>
-            {formatLabel(blok.formaat)}
+            {blok.formaat}
           </span>
         ))}
       </div>
@@ -558,8 +554,7 @@ function TemplateMatcher() {
           {formaten.map((formaat) => (
             <div key={formaat} className="flex flex-col">
               <label htmlFor={formaat} className="text-sm font-semibold mb-1">
-                {formatLabel(formaat)}{' '}
-                <span className='font-normal'>({formaat === "XS" ? 1000 : formaat === "S_nws" ? 1800 : formaat === "S_lk" ? 1800 : formaat === "M_nws" ? 2800 : formaat === "M_lk" ? 2800 : formaat === "L" ? 4000 : formaat === "XL" ? 5400 : 7200} tekens)</span>
+                <span className='font-bold'>{formaat}</span> <span className='font-normal'>({formaat === "XS" ? 1000 : formaat === "S_nws" ? 1800 : formaat === "S_lk" ? 1800 : formaat === "M_nws" ? 2800 : formaat === "M_lk" ? 2800 : formaat === "L" ? 4000 : formaat === "XL" ? 5400 : 7200} tekens)</span>
               </label>
               <Input
                 id={formaat}
@@ -573,7 +568,6 @@ function TemplateMatcher() {
           ))}
         </div>
       </div>
-    </div>
 
       <div className="bg-white/40 rounded-xl p-4">
         <h2 className="text-lg font-bold mb-4 flex items-center">📢 Advertenties <TooltipImage src="/advertentiematen.jpg" alt="Advertentiematen" /></h2>
