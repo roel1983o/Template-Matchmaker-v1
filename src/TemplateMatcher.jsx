@@ -548,9 +548,9 @@ function TemplateMatcher() {
         </div>
       </div>
 
-      <div className="bg-white/40 rounded-xl p-4">
+     <div className="bg-white/40 rounded-xl p-4">
         <h2 className="text-lg font-bold mb-4 flex items-center">📰 Artikelen</h2>
-        <div className="grid grid-cols-4 gap-6 max-w-xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 w-full max-w-3xl">
           {formaten.map((formaat) => (
             <div key={formaat} className="flex flex-col">
               <label htmlFor={formaat} className="text-sm font-semibold mb-1">
@@ -560,7 +560,7 @@ function TemplateMatcher() {
                 id={formaat}
                 type="number"
                 min="0"
-                className="border border-[#002f6c]"
+                className="border border-[#002f6c] px-3 py-2 rounded-md w-full"
                 value={geselecteerd[formaat] || ""}
                 onChange={(e) => updateAantal(formaat, e.target.value)}
               />
