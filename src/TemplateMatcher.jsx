@@ -347,7 +347,7 @@ const templates = [
   { naam: "S517M variant 4", artikelen: ["L", "M_lk", "S_nws", "S_nws", "S_nws"], preview: "S517M.jpg" },
   { naam: "S517M variant 5", artikelen: ["L", "M_lk", "S_lk", "S_nws", "S_nws"], preview: "S517M.jpg" },
   { naam: "S517M variant 6", artikelen: ["L", "M_lk", "S_lk", "S_lk", "S_nws"], preview: "S517M.jpg" },
-  { naam: "S517M variant 7", artikelen: ["L", "M_lk", "S_nws", "S_lk", "S_nws"], preview: "S517M.jpg" },
+   { naam: "S517M variant 7", artikelen: ["L", "M_lk", "S_nws", "S_lk", "S_nws"], preview: "S517M.jpg" },
 ];
 
 const formaten = ["XS", "S_nws", "S_lk", "M_nws", "M_lk", "L", "XL", "XXL"];
@@ -416,6 +416,21 @@ const WrenchTooltip = () => (
   </span>
 );
 
+// Weergavelaag voor artikelcodes (S_nws, M_lk, etc.)
+// - Eerste letter in **bold**
+// - Toevoeging (nws/lk) in lichtgewicht en zonder underscore
+const renderFormaat = (formaat) => {
+  if (!formaat || typeof formaat !== 'string') return null;
+  if (!formaat.includes('_')) return <span className="font-bold">{formaat}</span>;
+  const [letter, suffix] = formaat.split('_');
+  const suffixLabel = suffix === 'nws' ? 'nieuws' : (suffix === 'lk' ? 'lichte kop' : suffix);
+  return (
+    <span>
+      <span className="font-bold">{letter}</span>{' '}<span className="font-light">{suffixLabel}</span>
+    </span>
+  );
+};
+
 function TemplateMatcher() {
   const [geselecteerd, setGeselecteerd] = useState({});
   const [aantalAdvertenties, setAantalAdvertenties] = useState(0);
@@ -474,7 +489,7 @@ function TemplateMatcher() {
       <div className="mt-2 flex flex-wrap">
         {blokjeObjecten.map((blok, i) => (
           <span key={i} className={`inline-block px-2 py-1 m-0.5 ${blok.kleur} text-white rounded text-sm font-bold`}>
-            {blok.formaat}
+            {renderFormaat(blok.formaat)}
           </span>
         ))}
       </div>
@@ -554,7 +569,7 @@ function TemplateMatcher() {
           {formaten.map((formaat) => (
             <div key={formaat} className="flex flex-col">
               <label htmlFor={formaat} className="text-sm font-semibold mb-1">
-                <span className='font-bold'>{formaat}</span> <span className='font-normal'>({formaat === "XS" ? 1000 : formaat === "S_nws" ? 1800 : formaat === "S_lk" ? 1800 : formaat === "M_nws" ? 2800 : formaat === "M_lk" ? 2800 : formaat === "L" ? 4000 : formaat === "XL" ? 5400 : 7200} tekens)</span>
+                {renderFormaat(formaat)} <span className='font-normal'>({formaat === "XS" ? 1000 : formaat === "S_nws" ? 1800 : formaat === "S_lk" ? 1800 : formaat === "M_nws" ? 2800 : formaat === "M_lk" ? 2800 : formaat === "L" ? 4000 : formaat === "XL" ? 5400 : 7200} tekens)</span>
               </label>
               <Input
                 id={formaat}
