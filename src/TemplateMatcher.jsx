@@ -389,6 +389,22 @@ const combinatieMap = {
   'W39|W41': ['E'], 'W41|W39': ['E'],
 };
 
+
+// Helper om labels mooi weer te geven (UI: underscores weg; eerste deel vet, rest normaal)
+const formatLabel = (formaat) => {
+  if (["S_nws", "S_lk", "M_nws", "M_lk"].includes(formaat)) {
+    const [left, right] = formaat.split("_");
+    return (
+      <span>
+        <span className="font-bold">{left}</span> <span className="font-normal">{right}</span>
+      </span>
+    );
+  }
+  return <span className="font-bold">{formaat}</span>;
+};
+
+
+
 const TooltipImage = ({ src = "/advertentiematen.jpg", alt = "Advertentiematen" }) => (
   <span className="relative group inline-flex items-center ml-2 cursor-help select-none" aria-label="Toon voorbeeld">
     <span className="text-base align-middle">ℹ️</span>
@@ -474,7 +490,7 @@ function TemplateMatcher() {
       <div className="mt-2 flex flex-wrap">
         {blokjeObjecten.map((blok, i) => (
           <span key={i} className={`inline-block px-2 py-1 m-0.5 ${blok.kleur} text-white rounded text-sm font-bold`}>
-            {blok.formaat}
+            {formatLabel(blok.formaat)}
           </span>
         ))}
       </div>
@@ -553,8 +569,8 @@ function TemplateMatcher() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 w-full max-w-3xl">
           {formaten.map((formaat) => (
             <div key={formaat} className="flex flex-col">
-              <label htmlFor={formaat} className="text-sm font-semibold mb-1">
-                <span className='font-bold'>{formaat}</span> <span className='font-normal'>({formaat === "XS" ? 1000 : formaat === "S_nws" ? 1800 : formaat === "S_lk" ? 1800 : formaat === "M_nws" ? 2800 : formaat === "M_lk" ? 2800 : formaat === "L" ? 4000 : formaat === "XL" ? 5400 : 7200} tekens)</span>
+              <label htmlFor={formaat} className=\"text-sm font-semibold mb-1\">
+                {formatLabel(formaat)} <span className='font-normal'>({formaat === "XS" ? 1000 : formaat === "S_nws" ? 1800 : formaat === "S_lk" ? 1800 : formaat === "M_nws" ? 2800 : formaat === "M_lk" ? 2800 : formaat === "L" ? 4000 : formaat === "XL" ? 5400 : 7200} tekens)</span>
               </label>
               <Input
                 id={formaat}
